@@ -1,0 +1,27 @@
+services:
+  mysql-image:
+    container_name: Database
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: abcdefgh
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 30s
+      retries: 5
+      start_period: 30s
+      timeout: 20s
+    
+  backend:
+    build:
+      context: . 
+    container_name: node
+    ports:
+       - "4000:4000"
+    volumes:
+      - .:/app
+    depends_on:
+      mysql-image:
+        condition: service_healthy
+    restart: on-failure
+    stdin_open: true
+    tty: true
