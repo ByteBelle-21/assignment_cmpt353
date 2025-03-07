@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
-
+const PORT = 3000;
 const app = express();
 app.use(bodyParser.json());
 
@@ -42,7 +42,7 @@ db.getConnection((err,connection)=>{
                      ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                        topic VARCHAR(200) NOT NULL,
                        data VARCHAR(1000) NOT NULL,
-                       datetime DATETIME NOT NULL )`, error =>{
+                       datetime VARCHAR(100) NOT NULL )`, error =>{
                             connection.release();
                             if(error){
                                 console.log("Error while creating posts table : ", error);
@@ -56,7 +56,7 @@ db.getConnection((err,connection)=>{
                      ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                        postId INT NOT NULL,
                        data VARCHAR(1000) NOT NULL,
-                       datetime DATETIME NOT NULL )`, error =>{
+                       datetime VARCHAR(100) NOT NULL )`, error =>{
                             connection.release();
                             if(error){
                                 console.log("Error while creating responses table : ", error);
@@ -174,3 +174,12 @@ app.get('/alldata',(request,response)=>{
                 }    
     });
 });
+
+
+app.get('/', (req, res) => {
+	res.sendFile(__dirname+'/posting.html');
+});
+
+app.use('/',express.static(__dirname));
+
+app.listen(PORT);
